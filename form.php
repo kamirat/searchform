@@ -92,6 +92,15 @@ $places = array(
   ),
 );
 
+// 選択された都道府県のコード
+$pref ="";
+
+if (isset($_POST["pref"]) && isset($prefectures[$_POST["pref"]])){
+   $pref = $_POST['pref'];
+
+
+}
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -133,35 +142,41 @@ $places = array(
     <form class="form-inline" action="form.php" method="post">
       <div class="form-group">
          <select name="pref" class="form-control">
-          <OPTION value="0">選択してください</OPTION>
+          <OPTION value="">選択してください</OPTION>
           <?php foreach ($prefectures as $number => $prefecture): ?>
-          <option value="<?php echo $prefecture; ?>" > <?php echo $prefecture; ?>  <?php endforeach ?></option>
-         </select>
-      <?php foreach ($places as $order => $info): ?>
-      <?php foreach ($info as $label => $value): ?>
-         <input type="hidden" value="<?php echo count($order);?>" name="great">
-        <?php endforeach ?>
-      <?php endforeach ?>
+          <option value="<?php echo $number; ?>" <?php if ($pref == $number): ?> selected <?php endif ?> > <?php echo $prefecture; ?> </option>
+          <?php endforeach ?>
+          </select>
       </div>
       <button class="btn btn-primary btn-sm" type="submit"> 検 索 </button>
     </form>
-    <p class="search-result"><?php echo $_POST["pref"];?>の観光スポットは <?php echo $_POST["great"];?> 件見つかりました。</p>
-    <?php var_dump($_POST)?>
+
+
+
+<?php if (isset($places[$pref])): ?>
+    <p class="search-result"><?php echo $prefectures[$pref];?>の観光スポットは <?php echo count($places[$pref]);?> 件見つかりました。</p>
+
+<?php foreach ($places[$pref] as $place): ?>
 
 
     <div class="media">
-
       <div class="media-left">
 
-
-        <img src="<?php echo $value['image']; ?>" class="media-object img-thumbnail">
+        <img src="<?php echo $place['image']; ?>" class="media-object img-thumbnail">
       </div>
       <div class="media-body">
-        <h4 class="media-heading"><?php echo $value['name']; ?></h4>
-        <?php echo $value['detail']; ?>
+        <h4 class="media-heading"><?php echo $place['name']; ?></h4>
+        <?php echo $place['detail']; ?>
+
 
       </div>
     </div>
+<?php endforeach ?>
+<?php else: ?>
+      <p class="search-result"><?php echo $prefectures[$pref];?>の観光スポットは見つかりませんでした｡</p>
+
+<?php endif ?>
+
   </div>
   <hr>
   <footer>&copy; 観光スポット検索協会 </footer>
